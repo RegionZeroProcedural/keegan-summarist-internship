@@ -10,6 +10,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --primary: #032b42;
+  --statsCard: #f1f6f4;
+  --reviewBG: #fff3d7;
+  --awardBG: #d7e9ff;
+  --footerBG: #f2fbf8;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +28,75 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Keep the login modal usable if React has not hydrated yet. */
+.summarist-login-overlay {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.summarist-login-overlay[data-open="true"],
+.summarist-login-overlay:target {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Universal shimmering skeleton */
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: inherit;
+}
+
+.skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+
+    background: linear-gradient(
+        110deg,
+        #e5e7eb 0%,
+        #e5e7eb 30%,
+        #f8fafc 50%,
+        #e5e7eb 70%,
+        #e5e7eb 100%
+    );
+
+    background-size: 200% 100%;
+
+    animation: skeletonShimmer 1.8s linear infinite;
+}
+
+@keyframes skeletonShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton::after {
+        animation: none;
+    }
+}
+/* Responsive foundation: never let content force a page-wide horizontal scrollbar. */
+html { min-width: 0; scroll-padding-top: 1rem; }
+body { min-width: 0; overflow-x: clip; }
+img, video, canvas, svg { max-width: 100%; }
+button, input, select, textarea { font: inherit; }
+@media (max-width: 639px) {
+    input[type="search"], input[type="email"], input[type="password"] { font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; }
 }
