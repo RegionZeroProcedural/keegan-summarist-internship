@@ -1,0 +1,39 @@
+IMPORTANT: Add this match block INSIDE the existing
+  service cloud.firestore { match /databases/{database}/documents { ... } }
+block in Firebase Console -> Firestore Database -> Rules.
+
+DO NOT replace or remove your existing /subscriptions/{userId} rules.
+Those must continue to disallow all client writes.
+
+    match /users/{userId}/library/{bookId} {
+      function isLibraryOwner() {
+        return request.auth != null
+          && request.auth.uid == userId
+          && request.auth.token.firebase.sign_in_provider != 'anonymous';
+      }
+
+      allow get, list, delete: if isLibraryOwner();
+
+      allow create, update: if isLibraryOwner()
+        && request.resource.data.id == bookId
+        && request.resource.data.keys().hasOnly([
+          'id', 'title', 'author', 'subTitle', 'imageLink',
+          'subscriptionRequired', 'averageRating',
+          'isFinished', 'savedAt', 'finishedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'id', 'title', 'author', 'subTitle', 'imageLink',
+          'subscriptionRequired', 'averageRating',
+          'isFinished', 'savedAt', 'finishedAt'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.author is string
+        && request.resource.data.imageLink is string
+        && request.resource.data.isFinished is bool;
+    }
+
+After publishing rules, verify:
+- Signed-in user can save and remove their own titles.
+- Signed-out visitor cannot read or write a library.
+- Guest preview works without any Firestore writes.
+- The /subscriptions documents are STILL NOT client-writable.

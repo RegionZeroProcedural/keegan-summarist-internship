@@ -1,0 +1,13 @@
+.cyclingText {
+  color: #6b7280;
+  animation-name: greenHighlightCycle;
+  animation-duration: 15s; /* 6 phrases × 2.5 seconds */
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes greenHighlightCycle {
+  0%, 10% { color: #2bd97c; }
+  16.667%, 94.5% { color: #6b7280; }
+  100% { color: #2bd97c; }
+}
